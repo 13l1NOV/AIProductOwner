@@ -6,8 +6,10 @@ import math
 
 from pygame import KEYDOWN, K_ESCAPE
 
+from Controllers.mainController import Controller
 from Game.bar import Bar
 from Game.office_view import Office_View
+from Game.tasks import Tasks
 from Model.model import Model
 
 
@@ -18,17 +20,22 @@ class Game:
         self.width = 1200
         self.height = 800
 
+        self.buttons = []
         self.model = Model()
+        self.controller = Controller(self.model)
 
         #self.window
 
     def init_window(self):
         pygame.init()
-        self.window = pygame.display.set_mode((self.width, self.height))
-        pygame.display.set_caption('My own little world')
+        self.window = pygame.display.set_mode((self.width, self.height))#, pygame.FULLSCREEN)
+        pygame.display.set_caption('Product Owner AI')
         self.clock = pygame.time.Clock()
         self.background_image = pygame.image.load(self.path+'/Background.jpg').convert()
         self.background_image = pygame.transform.scale(self.background_image, (self.width, self.height))
+        self.bar = Bar(self.width, self.height, self)
+        self.tasks = Tasks(self.width, self.height, self)
+        #self.window.blit(self.background_image, (0, 0))
         self.bar = Bar(self.width, self.height, self)
 
         self.init_office()
@@ -47,10 +54,16 @@ class Game:
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_SPACE:
                         start = True
+            for button in self.buttons:
+                button.process()
+            #self.window.blit(self.background_image, (0, 0))
+            #pygame.display.update()
 
             self.clock.tick(60)
+            self.window.blit(self.background_image, (0, 0))
             self.bar.update(self.model)
             self.office.update(self.model)
+            self.tasks.update(self.model)
 
     def update_model(self, model):
         pass
