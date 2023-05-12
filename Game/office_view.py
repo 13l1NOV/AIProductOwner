@@ -41,7 +41,6 @@ class Office_View:
 
     def update(self, model):
         self.update_data(model)
-        pygame.display.update()
 
     def update_data(self, model):
         sx = 420

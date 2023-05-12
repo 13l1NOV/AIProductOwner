@@ -59,12 +59,14 @@ class Game:
             #self.window.blit(self.background_image, (0, 0))
             #pygame.display.update()
 
-            self.clock.tick(60)
-            self.window.blit(self.background_image, (0, 0))
-            self.bar.update(self.model)
+            self.window.blit(self.background_image, (0, 0)) # прошлое окно перересовывается пустым
+
             self.office.update(self.model)
+            self.bar.update(self.model)
             self.tasks.update(self.model)
 
+            pygame.display.update() # обновляем все изменения
+            self.clock.tick(30)
     def update_model(self, model):
         pass
 
