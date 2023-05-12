@@ -24,12 +24,12 @@ class Button():
 
     def process(self):
         #self.buttonSurface.fill(self.fillColors['hover'])
+        mousePos = pygame.mouse.get_pos()
+        if self.buttonRect.collidepoint(mousePos):
+            if pygame.mouse.get_pressed(num_buttons=3)[0]:
 
-        if pygame.mouse.get_pressed(num_buttons=3)[0]:
-            #self.buttonSurface.fill(self.fillColors['pressed'])
-
-            if not self.alreadyPressed:
-                self.onclickFunction()
-            self.alreadyPressed = True
-        else:
-            self.alreadyPressed = False
+                if not self.alreadyPressed:
+                    self.onclickFunction()
+                self.alreadyPressed = True
+            else:
+                self.alreadyPressed = False
