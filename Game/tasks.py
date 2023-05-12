@@ -1,7 +1,7 @@
 import pygame
 from pygame.locals import Rect
 
-from Game.Views.button import Button
+from Game.button import Button
 
 
 class Tasks:
@@ -21,6 +21,8 @@ class Tasks:
         #rec = pygame.Rect((200, 200, 200, 200))
         #pygame.draw.rect(self.game_bar, (255, 0, 0), rec)
 
+        self.rect_tasks = Rect(10, 500, self.width / 1.5, self.height * 0.2)
+
 
     def update(self, model):
         self.set_data(model)
@@ -29,10 +31,12 @@ class Tasks:
         pygame.display.update()
 
     def set_data(self, model):
-        #self.money = model.status.money
-        pass
+        self.tasks = len(model.status.available_tasks)
+
 
     def update_data(self):
+        self.label_tasks = self.heading_font.render("Тасков: " + str(self.tasks), True, (73, 168, 70))
+        self.game.window.blit(self.label_tasks, self.rect_tasks)
         #label_money = self.heading_font.render("Денег: " + str(self.money) + "$", True, (73, 168, 70))
         #self.game.window.blit(label_money, self.rect_money)
 
@@ -43,10 +47,13 @@ class Tasks:
 
     def init_button(self):
         button_sprint = Button(50, self.height / 10 * 7.5, "СПРИНТ", self.game.controller.start_sprint)
+        button_create_tasks = Button(50, self.height / 10 * 1, "СОЗДАТЬ ТАСКИ", self.game.controller.create_two_easy_task)
         button_decomp = Button(50, self.height / 10 * 1.75, "ДЕКОМПОЗИРОВАТЬ", self.game.controller.decomposition_tasks)
 
         self.game.background_image.blit(button_sprint.buttonSurface, button_sprint.buttonRect)
         self.game.background_image.blit(button_decomp.buttonSurface, button_decomp.buttonRect)
+        self.game.background_image.blit(button_create_tasks.buttonSurface, button_create_tasks.buttonRect)
 
         self.game.buttons.append(button_sprint)
         self.game.buttons.append(button_decomp)
+        self.game.buttons.append(button_create_tasks)
