@@ -51,7 +51,6 @@ class Bar:
     def update(self, model):
         self.set_data(model)
         self.update_data()
-        pygame.display.update()
 
     def set_data(self, model):
         self.money = model.status.money
@@ -84,5 +83,3 @@ class Bar:
         x = int((self.money / self.target) * count)
         label_progress = self.heading_font_bold.render(('▄'*x).ljust(count, '_'), True, (0, 0, 0))
         self.game.window.blit(label_progress, self.rect_progress)
-
-        pygame.display.update()

@@ -28,8 +28,6 @@ class Tasks:
         self.set_data(model)
         self.update_data()
 
-        pygame.display.update()
-
     def set_data(self, model):
         self.tasks = len(model.status.available_tasks)
 
@@ -37,13 +35,6 @@ class Tasks:
     def update_data(self):
         self.label_tasks = self.heading_font.render("Тасков: " + str(self.tasks), True, (73, 168, 70))
         self.game.window.blit(self.label_tasks, self.rect_tasks)
-        #label_money = self.heading_font.render("Денег: " + str(self.money) + "$", True, (73, 168, 70))
-        #self.game.window.blit(label_money, self.rect_money)
-
-        pygame.display.update()
-
-    #def XX(self):
-    #    self.game.controller.start_sprint()
 
     def init_button(self):
         button_sprint = Button(50, self.height / 10 * 7.5, "СПРИНТ", self.game.controller.start_sprint)
