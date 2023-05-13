@@ -55,31 +55,34 @@ class Bar:
     def set_data(self, model):
         self.money = model.status.money
         self.debet = model.status.debt
-        self.loyal = model.status.loyal
+        self.loyal = round(model.status.loyal, 4)
         self.people = model.status.users
         self.target = model.status.target
         self.sprints = model.status.number_sprint
+        self.work_tasks = model.status.working_tasks
 
     def update_data(self):
         self.label_money = self.heading_font.render("Денег: " + str(self.money) + "$", True, (73, 168, 70))
         self.game.window.blit(self.label_money, self.rect_money)
 
-        self.label_loyal = self.heading_font.render("Лояльность: " + str(self.loyal), True, (73, 168, 70))
+        self.label_loyal = self.heading_font.render("    Лояльность: " + str(self.loyal), True, (73, 168, 70))
         self.game.window.blit(self.label_loyal, self.rect_loyal)
 
         label_people = self.heading_font.render("Пользователи: " + str(self.people), True, (73, 168, 70))
         self.game.window.blit(label_people, self.rect_people)
 
-        label_debet = self.heading_font.render("Долг: " + str(self.debet) + "$", True, (73, 168, 70))
+        label_debet = self.heading_font.render(" Долг: " + str(self.debet) + "$", True, (73, 168, 70))
         self.game.window.blit(label_debet, self.rect_debet)
 
-        label_target = self.heading_font.render("Цель: " + str(self.target) + "$", True, (0, 0, 0))
+        label_target = self.heading_font.render("Цель: " + str(self.target) + "$", True, (105, 105, 105))
         self.game.window.blit(label_target, self.rect_target)
 
         label_sprints = self.heading_font_bold.render("Спринты: " + str(self.sprints), True, (0, 0, 255))
         self.game.window.blit(label_sprints, self.rect_sprints)
 
-        count = 60
-        x = int((self.money / self.target) * count)
-        label_progress = self.heading_font_bold.render(('▄'*x).ljust(count, '_'), True, (0, 0, 0))
+        label_progress = self.heading_font_bold.render(self.get_bar(40, self.money, self.target), True, (0, 0, 0)) #▄
         self.game.window.blit(label_progress, self.rect_progress)
+
+    def get_bar(self, max, current, target):
+        x = int(min(1, current / target) * max)
+        return ('▄'*x).ljust(max, '─')

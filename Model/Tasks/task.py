@@ -2,6 +2,7 @@ import random
 
 
 class Task:
+    max_weight = 38
     def __init__(self):
         self.isStub = True
 
