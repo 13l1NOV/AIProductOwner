@@ -40,9 +40,16 @@ class Controller:
     def create_one_hard_task(self):
         if self.model.status.money > 0:
             cost_tasks = 160000
+            chance = random.randint(1, 100)
+            if chance <= 25:
+                typeTask = 'M'
+            elif 25 < chance <= 75:
+                typeTask = 'L'
+            else:
+                typeTask = 'XL'
             if cost_tasks < self.model.status.money:
                 self.model.status.money -= cost_tasks
-                self.model.status.available_tasks.append(Task(self.counter_id, 'M'))
+                self.model.status.available_tasks.append(Task(self.counter_id, typeTask))
                 self.counter_id += 1
                 return True
         return False

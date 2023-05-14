@@ -2,17 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="90dd4bee-aadb-4c26-8e22-86776de745be" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/TrainingAI.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Controllers/mainController.py" beforeDir="false" afterPath="$PROJECT_DIR$/Controllers/mainController.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Main/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/Main/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model/Office/office.py" beforeDir="false" afterPath="$PROJECT_DIR$/Model/Office/office.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model/Tasks/subtask.py" beforeDir="false" afterPath="$PROJECT_DIR$/Model/Tasks/subtask.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model/Tasks/task.py" beforeDir="false" afterPath="$PROJECT_DIR$/Model/Tasks/task.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model/status.py" beforeDir="false" afterPath="$PROJECT_DIR$/Model/status.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
