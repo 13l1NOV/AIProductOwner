@@ -11,83 +11,11 @@ class Controller:
         self.counter_subtask = 0
         self.max_sub = 8
 
-    def create_four_easy_task(self):
-        if self.model.status.money > 0 and len(self.model.status.small_tasks) + 4 <= 8:
-            cost_tasks = 80000
-            if cost_tasks < self.model.status.money:
-                self.model.status.money -= cost_tasks
-                task = Task(self.counter_id, 'S')
-                self.counter_id+=1
-                self.model.status.working_tasks.append(task)
-
-                while task.weight > 0:
-                    max_weight = random.randint(1, 18)
-                    subtask = SubTask(self.counter_subtask, task.id_task, max_weight, task)
-                    self.counter_subtask += 1
-                    self.model.status.small_tasks.append(subtask)
-                    task.weight -= subtask.weight
-
-                    subtask2 = SubTask(self.counter_subtask, task.id_task, 19 - max_weight + 1, task)
-                    self.counter_subtask += 1
-                    self.model.status.small_tasks.append(subtask2)
-                    task.weight -= subtask2.weight
-                task.weight = task.max_weight
-                return True
-        return False
-
-
-    # Взаимодействие с подзадачами
-    def move_small_task_to_selected_list(self, id):
-        if self.model.status.money > 0 and id != -1:
-            for small_task in self.model.status.small_tasks:
-                if small_task.id == id:
-                    self.model.status.current_power += small_task.weight
-                    small_task.is_selected = True
-                    return True
-        return False
-
-    def start_sprint2(self):
-        if self.model.status.money > 0 and self.model.status.users > 0 and self.model.status.loyal > 0:
-            #if self.model.status.current_power <= self.model.status.max_power:
-            should_remove = []
-            for small_task in self.model.status.small_tasks:
-                if small_task.is_selected:
-                    should_remove.append(small_task)
-                    small_task.parent_task.weight -= small_task.weight
-            self.model.status.count_blank_sprint = 0 if should_remove else self.model.status.count_blank_sprint + 1
-
-            for task in should_remove:
-                self.model.status.small_tasks.remove(task)
-
-            for task in self.model.status.working_tasks:
-                if get_reward(task, self.model):
-                    self.model.status.working_tasks.remove(task)
-                    self.model.status.loyal += task.loyal
-                    self.model.status.users += task.users
-
-            self.model.status.number_sprint += 1
-            self.model.status.money = increase_money(self.model)
-            self.model.status.current_power = 0
-
-            if self.model.status.count_blank_sprint > 1:
-                count_blank_sprint = self.model.status.count_blank_sprint
-                self.model.status.loyal = decrease_loyal(count_blank_sprint, self.model)
-                self.model.status.users = decrease_users(count_blank_sprint, self.model)
-
-            return True
-        return False
-
     # Взаимодействие с офисом
-    def buy_robot(self):  # id_room
+    def buy_robot(self):
         if self.model.status.money > 0:
-            id_room = 0
-            for room in self.model.office.list_rooms:
-                if room.count_robots < 4:
-                    id_room = room.id
-                    self.model.status.money -= Robot.cost_buy
-                    self.model.office.list_rooms[id_room].add_robot()
-                    break
-
+            self.model.status.money -= self.model.office.cost_robot
+            self.model.office.count_robot += 1
             max_power = 0
             for room in self.model.office.list_rooms:
                 max_power += 10 * room.count_robots
@@ -95,19 +23,6 @@ class Controller:
             return True
         else:
             return False
-
-    def buy_room(self):
-        if self.model.status.money > 0:
-            self.model.status.money -= self.model.office.cost_room
-            self.model.office.add_room()
-            self.model.status.count_room += 1
-
-            max_power = 0
-            for room in self.model.office.list_rooms:
-                max_power += 10 * room.count_robots
-            self.model.status.max_power = max_power
-        return self.model.status.money > 0
-
 
     # Взаимодействие с тасками
     def create_two_easy_task(self):

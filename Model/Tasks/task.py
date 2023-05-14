@@ -17,26 +17,32 @@ class Task:
     def set_weight(self):
         if self.type_task == 'S':
             return 38
-        elif self.type_task == 'M':
+        if self.type_task == 'M':
             return 76
-        else:
-            return 124
+        if self.type_task == 'L':
+            return 114
+        if self.type_task == 'XL':
+            return 152
 
     def set_loyal(self):
         if self.type_task == 'S':
             return random.randint(2, 5) / 100
-        elif self.type_task == 'M':
-            return random.randint(6, 8) / 100
-        else:
-            return random.randint(9, 15) / 100
+        if self.type_task == 'M':
+            return random.randint(4, 10) / 100
+        if self.type_task == 'L':
+            return random.randint(8, 20) / 100
+        if self.type_task == 'XL':
+            return random.randint(16, 40) / 100
 
     def set_users(self):
         if self.type_task == 'S':
             return random.randint(2, 5) * 100
-        elif self.type_task == 'M':
-            return random.randint(6, 8) * 100
-        else:
-            return random.randint(9, 15) * 100
+        if self.type_task == 'M':
+            return random.randint(4, 10) * 100
+        if self.type_task == 'L':
+            return random.randint(8, 20) * 100
+        if self.type_task == 'XL':
+            return random.randint(16, 40) * 100
 
     def get_target(self):
         return self.weight if not self.isStub else -1

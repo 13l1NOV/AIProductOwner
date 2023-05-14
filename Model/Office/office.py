@@ -3,22 +3,17 @@ from Model.Rooms.rooms import Room
 
 class Office:
     def __init__(self):
-        self.limit_rooms = 8
-        self.list_rooms = [Room(0)]
-        self.list_rooms[0].add_robot()
-        self.status_full = False
-        self.cost_room = 200000
+        self.cost_robot = 50000
+        self.count_robot = 2
+        self.cost_work = 10000
 
-    def add_room(self):
-        if not self.status_full:
-            self.list_rooms.append(Room(len(self.list_rooms)))
-            self.cost_room *= 1.5
-            self.cost_room = int(self.cost_room)
-            if len(self.list_rooms) >= self.limit_rooms:
-                self.status_full = True
-
-    def check_status_robot(self):
-        result = 0
-        for room in self.list_rooms:
-            result += room.count_robots
-        return result
+    def add_robot(self):  # ограничений на кол-во роботов у нас нету
+        self.count_robot += 1
+        self.cost_work += 10000
+        if self.count_robot < 17:
+            if self.count_robot % 4 == 0:
+                self.cost_robot = 200000 * 1.5 * (self.count_robot // 4)
+            else:
+                self.cost_robot = 50000
+        else:
+            self.cost_robot *= 2

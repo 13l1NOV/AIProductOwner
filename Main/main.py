@@ -1,5 +1,5 @@
 #from View.view import View
-from Game.game import Game
+#from Game.game import Game
 from Model.model import Model
 from Controllers.mainController import Controller
 from Net.actor import Actor
@@ -73,10 +73,10 @@ if __name__ == '__main2__':
 
 
 if __name__ == "__main__":
-    game = Game()
-    game.start()
+    #game = Game()
+    #game.start()
 
-    input()
+    #input()
     print("starting")
     generation = 0
     # setup config
