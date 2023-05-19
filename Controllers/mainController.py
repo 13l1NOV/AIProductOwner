@@ -54,7 +54,7 @@ class Controller:
                 return True
         return False
 
-    def move_task_to_selected_list(self, id):
+    '''def move_task_to_selected_list(self, id):
         if self.model.status.money > 0 and id != -1:
             for task in self.model.status.available_tasks:
                 if task.id_task == id:
@@ -75,7 +75,7 @@ class Controller:
                     return True
         #else:
         return False
-
+'''
     def decomposition_tasks(self):
         if self.model.status.money > 0:
             if self.model.status.current_power <= self.model.status.max_power:
