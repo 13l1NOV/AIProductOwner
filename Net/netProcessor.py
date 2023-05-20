@@ -1,3 +1,5 @@
+from Net.DeepNet import DeepNet
+from Net.Game import Game
 
 class NetProcessor:
     def __init__(self):
@@ -23,7 +25,7 @@ class NetProcessor:
 
         iteration = 0
         while iteration <= self.countIteration:
-
+            print("iteration=======================")
             for i in range(len(nets)):
                 self.net_step(nets[i], games[i])
                 #games[i] is alive

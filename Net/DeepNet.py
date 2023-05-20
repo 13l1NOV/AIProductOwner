@@ -3,18 +3,22 @@ from tensorflow.keras import initializers
 
 class DeepNet:
     def __init__(self):
-        self.model = create_initial_net()
+        self.model = self.create_initial_net()
         self.fitness = 0
         self.count_backlog = 6
         self.count_tasks = 32
 
     def create_initial_net(self):
         model = tf.keras.models.Sequential([
-            tf.keras.layers.Dense(12, activation='selu', input_shape=(53,), kernel_initializer=tf.keras.initializers.RandomNormal(mean=0., stddev=1.)),
+            tf.keras.layers.InputLayer( input_shape=(1,)),#shape=(140)),
+            tf.keras.layers.Dense(12, activation='selu', kernel_initializer=tf.keras.initializers.RandomNormal(mean=0., stddev=1.)),
+            #tf.keras.layers.Dense(12, activation='selu', input_shape=(1,), kernel_initializer=tf.keras.initializers.RandomNormal(mean=0., stddev=1.)),
             tf.keras.layers.Dense(6, activation='selu', kernel_initializer=tf.keras.initializers.RandomNormal(mean=0., stddev=1.)),
             tf.keras.layers.Dense(1)
         ])
-        model.eval()
+        model.compile()
+        #model.summary()
+        #model.evaluate()
         return model
 
     def get_weights(self):
@@ -28,12 +32,19 @@ class DeepNet:
         return weights
 
     def replace_net_weight(self):
+        #model.load_weights(...)
         pass
 
     def step(self, game_state):
-        res = self.model(game_state)
-        print("DeepNet_step ", res)
-        res_int = round(res)
+        tensor = tf.constant(game_state)
+        #tensor = tf.reshape(tensor, [1, 140])
+        #res = self.model(tensor)
+        #res = self.model.predict(game_state)
+        res = self.model.predict(tensor)
+        print("DeepNet_step ", res, len(res))
+        #print(res)
+        res_int = round(tensor.numpy())
+        res_int = round(tensor.numpy())
         if res_int < 0:
             return (GameDoing.RELEASE)
         if res_int == 0:

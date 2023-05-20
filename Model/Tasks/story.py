@@ -14,7 +14,7 @@ class Story:
         self.weight = self.set_weight()
         self.loyal = self.set_loyal()
         self.users = self.set_users()
-        self.percent_complete = 0
+        self.weight_complete = 0
         create_tasks(self)
 
     def set_weight(self):
@@ -61,6 +61,7 @@ class Story:
         else:
             self.isComplete = False
         return True if self.tasks else False
+
     def create_tasks(self):
         for task_id in range(self.count_task):
             div = self.count_task - task_id

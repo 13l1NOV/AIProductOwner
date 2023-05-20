@@ -12,7 +12,6 @@ class Task:
         self.id = id_task
         self.id_story = id_story
         self.weight = set_weight(min_weight, max_weight)
-        self.part_percent = self.weight*38/100
         self.isWorking = False
 
 

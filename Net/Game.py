@@ -1,3 +1,5 @@
+from Model.model import Model
+from Controllers.mainController import Controller
 
 class Game:
     def __init__(self):
@@ -7,7 +9,7 @@ class Game:
 
     def execute(self, do, index):
         if do == GameDoing.RELEASE:
-            self.controller # ДОБАВИТЬ
+            self.controller.start_release()
         elif do == GameDoing.SPRINT:
             self.controller.start_sprint()
         elif do == GameDoing.DO_RESEARCH:
@@ -17,7 +19,7 @@ class Game:
         elif do == GameDoing.DECOMPOSE:
             self.controller.decomposition_tasks(index) # ДОБАВИТЬ В КОНТРОЛЛЕР ВЫПОЛНЕНИЕ ТОЛЬКО ОДНОЙ ЗАДАЧИ НА ДЕКОМПОЗЩИЦИЮ
         elif do == GameDoing.SELECT_TASK:
-            self.controller.move_subtask_to_selected_list(index) # ПЕРЕДЕЛАИТЬ НАЗВАНИЕ В КОНТРОЛЛЕРЕ
+            self.controller.select_task(index) # ПЕРЕДЕЛАИТЬ НАЗВАНИЕ В КОНТРОЛЛЕРЕ
         elif do == GameDoing.BUY_ROBOT:
             self.controller.buy_robot()
         else:
@@ -35,29 +37,42 @@ class Game:
         res.append(st.target)
         res.append(st.current_power)
         res.append(st.max_power)
-        res.append(st.count_room)
+        #res.append(st.count_room)
         res.append(st.count_blank_sprint)
 
-        for i in range(6):
-            if len(st.backlog) > i:
-                res.append(st.backlog[i].get_target())
-            else:
-                res.append(Task(-1, 'S').get_target())
-        for i in range(6):
-            if len(st.selected_tasks) > i:
-                res.append(st.selected_tasks[i].get_target())
-            else:
-                res.append(Task(-1, 'S').get_target())
+        tasks = self.model.status.list_tasks
+        working_story = self.model.status.working_story
+        backlog = self.model.status.backlog
 
-        for i in range(24):
-            if len(st.available_subtasks) > i:
-                res.append(st.available_subtasks[i].get_target())
+        for i in range(backlog.get_len()):
+            story = backlog.get(i)
+            if story is not None:
+                res.append(story.loyal)
+                res.append(story.users)
+                res.append(story.weight)
             else:
-                res.append(SubTask(-1, -1, 20).get_target())
+                self.add_in_arr(0, 3, res)
 
-        for i in range(24):
-            if len(st.selected_subtasks) > i:
-                res.append(st.selected_subtasks[i].get_target())
+        for i in range(working_story.get_len()):
+            story = working_story.get(i)
+            if story is not None:
+                res.append(story.loyal)
+                res.append(story.users)
+                res.append(story.weight_complete)
             else:
-                res.append(SubTask(-1, -1, 20).get_target())
+                self.add_in_arr(0, 3, res)
+
+        for i in range(tasks.get_len()):
+            task = tasks.get(i)
+            if task is not None:
+                res.append(task.weight)
+                res.append(working_story.get_index(task.id_story))
+                res.append(task.isWorking)
+            else:
+                self.add_in_arr(0, 3, res)
         return res
+
+
+    def add_in_arr(self, value, count, arr):
+        for i in range(count):
+            arr.append(value)
