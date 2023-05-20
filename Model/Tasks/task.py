@@ -1,48 +1,20 @@
 import random
 
 
+def set_weight(min_weight, max_weight):
+    return random.randint(min_weight, max_weight)
+
+
 class Task:
-    max_weight = 38
-    def __init__(self):
-        self.isStub = True
 
-    def __init__(self, id, type):
+    def __init__(self, id_task, id_story, min_weight, max_weight):
         self.isStub = False
-        self.id_task = id
-        self.type_task = type
-        self.weight = self.set_weight()
-        self.loyal = self.set_loyal()
-        self.users = self.set_users()
+        self.id = id_task
+        self.id_story = id_story
+        self.weight = set_weight(min_weight, max_weight)
+        self.part_percent = self.weight*38/100
+        self.isWorking = False
 
-    def set_weight(self):
-        if self.type_task == 'S':
-            return 38
-        if self.type_task == 'M':
-            return 76
-        if self.type_task == 'L':
-            return 114
-        if self.type_task == 'XL':
-            return 152
-
-    def set_loyal(self):
-        if self.type_task == 'S':
-            return random.randint(2, 5) / 100
-        if self.type_task == 'M':
-            return random.randint(4, 10) / 100
-        if self.type_task == 'L':
-            return random.randint(8, 20) / 100
-        if self.type_task == 'XL':
-            return random.randint(16, 40) / 100
-
-    def set_users(self):
-        if self.type_task == 'S':
-            return random.randint(2, 5) * 100
-        if self.type_task == 'M':
-            return random.randint(4, 10) * 100
-        if self.type_task == 'L':
-            return random.randint(8, 20) * 100
-        if self.type_task == 'XL':
-            return random.randint(16, 40) * 100
 
     def get_target(self):
         return self.weight if not self.isStub else -1

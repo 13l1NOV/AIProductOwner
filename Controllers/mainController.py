@@ -1,127 +1,87 @@
 from Model.Robots.robot import Robot
+from Model.Tasks.story import Story
 from Model.Tasks.task import Task
-from Model.Tasks.subtask import SubTask
 import random
+
 
 class Controller:
 
     def __init__(self, model):
         self.model = model
-        self.counter_id = 0
-        self.counter_subtask = 0
         self.max_sub = 8
+
+    def start_release(self):
+        if check_complete_story():
+            self.model.status.working_story = get_reward()
 
     # Взаимодействие с офисом
     def buy_robot(self):
         if self.model.status.money > 0:
             self.model.status.money -= self.model.office.cost_robot
             self.model.office.count_robot += 1
-            max_power = 0
-            for room in self.model.office.list_rooms:
-                max_power += 10 * room.count_robots
-            self.model.status.max_power = max_power
+            self.model.status.max_power += 10
             return True
-        else:
-            return False
+        return False
 
     # Взаимодействие с тасками
     def create_two_easy_task(self):
-        if self.model.status.money > 0:
+        if self.model.status.money > 0 and len(self.model.status.backlog < 5):
             cost_tasks = 80000
             if cost_tasks < self.model.status.money:
                 self.model.status.money -= cost_tasks
-                self.model.status.available_tasks.append(Task(self.counter_id, 'S'))
-                self.counter_id += 1
-                self.model.status.available_tasks.append(Task(self.counter_id, 'S'))
-                self.counter_id += 1
+                self.model.status.backlog.append(Story(len(self.model.status.backlog), 'S'))
+                self.model.status.backlog.append(Story(len(self.model.status.backlog), 'S'))
                 return True
         return False
 
     def create_one_hard_task(self):
-        if self.model.status.money > 0:
+        if self.model.status.money > 0 and len(self.model.status.backlog < 6):
             cost_tasks = 160000
             chance = random.randint(1, 100)
             if chance <= 25:
-                typeTask = 'M'
+                typetask = 'M'
             elif 25 < chance <= 75:
-                typeTask = 'L'
+                typetask = 'L'
             else:
-                typeTask = 'XL'
+                typetask = 'XL'
             if cost_tasks < self.model.status.money:
                 self.model.status.money -= cost_tasks
-                self.model.status.available_tasks.append(Task(self.counter_id, typeTask))
+                self.model.status.backlog.append(Story(len(self.model.status.backlog), typetask))
                 self.counter_id += 1
                 return True
         return False
 
-    '''def move_task_to_selected_list(self, id):
-        if self.model.status.money > 0 and id != -1:
-            for task in self.model.status.available_tasks:
-                if task.id_task == id:
-                    self.model.status.available_tasks.remove(task)
-                    self.model.status.selected_tasks.append(task)
-                    self.model.status.current_power += self.model.office.check_status_robot()
-                    return True
-        return False
-
-    def move_task_to_available_list(self, id):
-        if self.model.status.money > 0 and id != -1:
-            for task in self.model.status.selected_tasks:
-                if task.id_task == id:
-                    self.model.status.selected_tasks.remove(task)
-                    self.model.status.available_tasks.append(task)
-                    self.model.status.current_power -= self.model.office.check_status_robot()
-                    #break
-                    return True
-        #else:
-        return False
-'''
-    def decomposition_tasks(self):
-        if self.model.status.money > 0:
-            if self.model.status.current_power <= self.model.status.max_power:
-
-                while self.model.status.selected_tasks:
-                    task = self.model.status.selected_tasks.pop(0)
-                    self.model.status.working_tasks.append(task)
-
-                    while task.weight > 0:
-                        max_weight = random.randint(1, 19)
-                        subtask = SubTask(self.counter_subtask, task.id_task, max_weight)
-                        self.counter_subtask += 1
-                        self.model.status.available_subtasks.append(subtask)
-                        task.weight -= subtask.weight
-
-                        subtask2 = SubTask(self.counter_subtask, task.id_task, 19-max_weight+1)
-                        self.counter_subtask += 1
-                        self.model.status.available_subtasks.append(subtask2)
-                        task.weight -= subtask2.weight
+    def decomposition_tasks(self, index):  #
+        if self.model.status.money > 0 and index >= 0:
+            if self.model.status.current_power + self.model.office.count_robot <= self.model.status.max_power:
+                self.model.status.current_power += self.model.office.count_robot
+                story = self.model.status.backlog.pop(index)
+                change_id_stories_in_backlog()
+                for task in story.tasks:
+                    self.model.status.list_tasks.append(task)   #!@#!@#!@#
+                    task.id = len(self.model.status.list_tasks) #!@#!@#!@#
                 return True
-        #else:
         return False
 
     # Взаимодействие с подзадачами
-    def move_subtask_to_selected_list(self, id):
-        if self.model.status.money > 0  and id != -1:
-            for subtask in self.model.status.available_subtasks:
-                if subtask.id_task == id:
-                    self.model.status.available_subtasks.remove(subtask)
-                    self.model.status.selected_subtasks.append(subtask)
-                    self.model.status.current_power += subtask.weight
-                    #break
-                    return True
-        #else:
+    def select_task(self, index):
+        if self.model.status.money > 0 and index >= 0:
+            task = self.model.status.list_tasks[index]
+            if not task.isWorking:
+                self.model.status.current_power += task.weight
+                task.isWorking = True
+                return True
         return False
 
-    def move_subtask_to_available_list(self, id):
-        if self.model.status.money > 0 and id != -1:
-            for subtask in self.model.status.selected_subtasks:
-                if subtask.id_subtask == id:
-                    self.model.status.selected_subtasks.remove(subtask)
-                    self.model.status.available_subtasks.append(subtask)
-                    self.model.status.current_power -= subtask.weight
-                    #break
-                    return True
-        #else:
+    def unselect_task(self, id): # не надо по идее
+        task = self.model.status.list_tasks[id]
+        if self.model.status.money > 0 and id != -1 and task.isWorking:
+            if task.id_subtask == id:
+                self.model.status.list_tasks[id].isWorking = False
+                self.model.status.current_power -= task.weight
+                # break
+                return True
+        # else:
         return False
 
     # Взаимодействие со спринтами
@@ -130,17 +90,18 @@ class Controller:
 
             if self.model.status.current_power <= self.model.status.max_power:
 
-                if self.model.status.selected_subtasks:
+                if check_working_tasks():
                     self.model.status.count_blank_sprint = 0
-                    self.model.status.selected_subtasks = []
+                    for story in self.model.status.working_story:
+                        if not story.tasks:
+                            story.isComplete = True
+                        else:
+                            for task in story.tasks: # возможно корявые проценты!!!
+                                if task.isWorking:
+                                    story.percent_complete += task.part_percent
+                            change_id_tasks()
                 else:
                     self.model.status.count_blank_sprint += 1
-
-                for task in self.model.status.working_tasks:
-                    if get_reward(task, self.model):
-                        self.model.status.loyal += task.loyal
-                        self.model.status.users += task.users
-
                 self.model.status.number_sprint += 1
                 self.model.status.money = increase_money(self.model)
                 self.model.status.current_power = 0
@@ -150,7 +111,7 @@ class Controller:
                     self.model.status.loyal = decrease_loyal(count_blank_sprint, self.model)
                     self.model.status.users = decrease_users(count_blank_sprint, self.model)
                 return True
-        #else:
+        # else:
         return False
 
 
@@ -158,7 +119,7 @@ class Controller:
 def increase_money(model):
     cost_robot = 0
     if model.status.count_blank_sprint == 0:
-        cost_robot = model.office.check_status_robot()*10000
+        cost_robot = model.office.check_status_robot() * 10000
     users = model.status.users
     loyal = model.status.loyal
     money = model.status.money
@@ -181,9 +142,44 @@ def decrease_users(count_blank_sprint, model):
     return max(users - 500 * (count_blank_sprint - 1), 0)
 
 
-def get_reward(task, model):
-    id_task = task.id_task
-    for subtask in model.status.small_tasks:
-        if subtask.id_task == id_task and not subtask.is_selected:
-            return False
-    return True
+def get_reward():
+    clear_list = []
+    for story in self.model.status.working_story:
+        if story.isComplete:
+            self.model.status.loyal = story.loyal
+            self.model.status.users = story.users
+        else:
+            clear_list.append(story)
+    return clear_list
+
+
+def change_id_stories_in_backlog():
+    for story_id in range(len(self.model.status.backlog)):
+        self.model.status.backlog[id_story] = story_id
+        for task in self.model.status.backlog[id_story].tasks:
+            task.id_story = story_id
+
+def change_id_tasks():
+    clear_list_tasks = []
+    for story_id in range(len(self.model.status.working_story)):
+        clear_list_story = []
+        story = self.model.status.working_story[story_id]
+        for task_id in range(len(self.model.status.working_story[story_id].tasks)):
+            if not story.tasks[task_id].isWorking:
+                clear_list_story.append(story[task_id])
+                clear_list_tasks.append(story[task_id])
+        self.model.status.working_story[story_id] = clear_list_story
+    self.model.status.list_tasks = clear_list_tasks
+
+def check_working_tasks():
+    for task in self.model.status.list_tasks:
+        if task.isWorking:
+            return True
+    return False
+
+
+def check_complete_story():
+    for story in self.model.status.working_story:
+        if story.isComplete:
+            return True
+    return False

@@ -5,7 +5,7 @@ class Task():
     height = 60
     def __init__(self, x, y, task, onclickFunction=None):
         self.subtask = task
-        self.color = Task.getColor(self.subtask.id_task)
+        self.color = Task.getColor(self.subtask.id_story)
 
         self.x = x
         self.y = y

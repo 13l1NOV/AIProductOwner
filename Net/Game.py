@@ -39,8 +39,8 @@ class Game:
         res.append(st.count_blank_sprint)
 
         for i in range(6):
-            if len(st.available_tasks) > i:
-                res.append(st.available_tasks[i].get_target())
+            if len(st.backlog) > i:
+                res.append(st.backlog[i].get_target())
             else:
                 res.append(Task(-1, 'S').get_target())
         for i in range(6):

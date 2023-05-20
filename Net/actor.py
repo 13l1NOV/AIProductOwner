@@ -1,7 +1,7 @@
 from Controllers.mainController import Controller
 from Model.model import Model
+from Model.Tasks.story import Story
 from Model.Tasks.task import Task
-from Model.Tasks.subtask import SubTask
 
 import numpy as np
 from numpy.random import randint
@@ -104,27 +104,27 @@ class Actor:
         res.append(st.count_blank_sprint)
 
         for i in range(6):
-            if len(st.available_tasks) > i:
-                res.append(st.available_tasks[i].get_target())
+            if len(st.backlog) > i:
+                res.append(st.backlog[i].get_target())
             else:
-                res.append(Task(-1, 'S').get_target())
+                res.append(Story(-1, 'S').get_target())
         for i in range(6):
             if len(st.selected_tasks) > i:
                 res.append(st.selected_tasks[i].get_target())
             else:
-                res.append(Task(-1, 'S').get_target())
+                res.append(Story(-1, 'S').get_target())
 
         for i in range(24):
             if len(st.available_subtasks) > i:
                 res.append(st.available_subtasks[i].get_target())
             else:
-                res.append(SubTask(-1, -1, 20).get_target())
+                res.append(Task(-1, -1, 20).get_target())
 
         for i in range(24):
             if len(st.selected_subtasks) > i:
                 res.append(st.selected_subtasks[i].get_target())
             else:
-                res.append(SubTask(-1, -1, 20).get_target())
+                res.append(Task(-1, -1, 20).get_target())
         return res
 
 

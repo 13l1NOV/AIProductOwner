@@ -3,7 +3,7 @@ import time
 from pygame.locals import Rect
 from Game.task import Task
 
-from Model.Tasks import task as ModelTask
+from Model.Tasks import story as ModelTask
 
 from Game.button import Button
 
@@ -81,7 +81,7 @@ class Tasks:
         x = self.width * 0.95
         y = self.height * 0.35
         for i, task in enumerate(self.work_tasks):
-            color = Task.getColor(task.id_task)
+            color = Task.getColor(task.id_story)
             # task reward bar
             rec_reward = Rect(x - x / 5, y + i * 50 - 20, 100, 100)
             label_task_reward = self.heading_small_font_bold.render("Лояльность: " + str(task.loyal) + ", Пользователи: " + str(task.users), True, color)

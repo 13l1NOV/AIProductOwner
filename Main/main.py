@@ -4,7 +4,7 @@ from Model.model import Model
 from Controllers.mainController import Controller
 from Net.actor import Actor
 import random
-
+import numpy as np
 import neat
 from Net.net import run_generation
 """
@@ -79,13 +79,16 @@ if __name__ == "__main__":
     #input()
     print("starting")
     generation = 0
+    res = np.random.uniform(2, 6)
+    res = random.randint(1,1)
+    print(res)
     # setup config
-    config_path = "../config-feedforward.txt"
-    config = neat.config.Config(neat.DefaultGenome, neat.DefaultReproduction, neat.DefaultSpeciesSet,
-                                neat.DefaultStagnation, config_path)
+    #config_path = "../config-feedforward.txt"
+    #config = neat.config.Config(neat.DefaultGenome, neat.DefaultReproduction, neat.DefaultSpeciesSet,
+                                #neat.DefaultStagnation, config_path)
 
     # init NEAT
-    p = neat.Population(config)
+    #p = neat.Population(config)
 
     # run NEAT
-    p.run(run_generation, 1000)
+    #p.run(run_generation, 1000)

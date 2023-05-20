@@ -11,16 +11,16 @@ def status_bar(model):
 
 
 def status_task(model):
-    available_tasks = model.status.available_tasks
+    available_tasks = model.status.backlog
     selected_tasks = model.status.selected_tasks
-    print("Status Tasks: count available tasks = {}".format(len(model.status.available_tasks)))
+    print("Status Tasks: count available tasks = {}".format(len(model.status.backlog)))
     for task in available_tasks:
-        print("status task - id {}, type {}, users {}, loyal {}".format(task.id_task, task.type_task,
+        print("status task - id {}, type {}, users {}, loyal {}".format(task.id_story, task.type_story,
                                                                         task.users, task.loyal))
 
     print("Status Tasks: count selected tasks = {}".format(len(model.status.selected_tasks)))
     for task in selected_tasks:
-        print("status task - id {}, type {}, users {}, loyal {}".format(task.id_task, task.type_task,
+        print("status task - id {}, type {}, users {}, loyal {}".format(task.id_story, task.type_story,
                                                                         task.users, task.loyal))
 
     print()
@@ -32,13 +32,13 @@ def status_subtask(model):
     print("Status Tasks: count available subtasks = {}".format(len(model.status.available_subtasks)))
     for subtask in available_subtasks:
         print(
-            "status subtask - id subtask {}, id task {}, weight {}".format(subtask.id, subtask.id_task,
+            "status subtask - id subtask {}, id task {}, weight {}".format(subtask.id, subtask.id_story,
                                                                            subtask.weight))
 
     print("Status Tasks: count selected subtasks = {}".format(len(model.status.selected_subtasks)))
     for subtask in selected_subtasks:
         print(
-            "status subtask - id subtask {}, id task {}, weight {}".format(subtask.id, subtask.id_task,
+            "status subtask - id subtask {}, id task {}, weight {}".format(subtask.id, subtask.id_story,
                                                                            subtask.weight))
 
     print()

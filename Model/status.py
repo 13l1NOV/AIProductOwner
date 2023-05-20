@@ -9,9 +9,8 @@ class status:
         self.current_power = 0 # текущая трата энергии
         self.max_power = 20 # предел энергии
         self.count_blank_sprint = 0 # кол-во пустых спринтов подряд
-        self.working_tasks = [] # эту штуку убрать!!!!!!!!
-        self.available_tasks = [] # купленные истории
-        self.selected_tasks = [] # истории которые уйдут на декомпозицию
-        #self.available_subtasks = []
-        #self.selected_subtasks = []
-        #self.working_tasks = []
+        self.backlog = [] # купленные истории
+        self.working_story = [] # истории которые уйдут на декомпозицию
+        self.list_tasks = [] # список задач
+        self.cost_work_robots = self.max_power * 1000 # стоимость работы за всех роботов
+
