@@ -15,7 +15,7 @@ class Story:
         self.loyal = self.set_loyal()
         self.users = self.set_users()
         self.weight_complete = 0
-        create_tasks(self)
+        self.create_tasks(self)
 
     def set_weight(self):
         if self.type_story == 'S':

@@ -7,7 +7,7 @@ import random
 import numpy as np
 import neat
 from Net.netProcessor import NetProcessor
-#from Net.net
+
 
 if __name__ == "__main__":
     processor = NetProcessor()

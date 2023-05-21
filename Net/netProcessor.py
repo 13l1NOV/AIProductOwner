@@ -26,6 +26,7 @@ class NetProcessor:
         iteration = 0
         while iteration <= self.countIteration:
             print("iteration=======================")
+            print(games)
             for i in range(len(nets)):
                 self.net_step(nets[i], games[i])
                 #games[i] is alive

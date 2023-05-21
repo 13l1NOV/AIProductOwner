@@ -1,5 +1,7 @@
 import tensorflow as tf
 from tensorflow.keras import initializers
+import numpy as np
+from Net.GameDoing import GameDoing
 
 class DeepNet:
     def __init__(self):
@@ -10,10 +12,11 @@ class DeepNet:
 
     def create_initial_net(self):
         model = tf.keras.models.Sequential([
-            tf.keras.layers.InputLayer( input_shape=(1,)),#shape=(140)),
             tf.keras.layers.Dense(12, activation='selu', kernel_initializer=tf.keras.initializers.RandomNormal(mean=0., stddev=1.)),
+            #tf.keras.layers.BatchNormalization(),
             #tf.keras.layers.Dense(12, activation='selu', input_shape=(1,), kernel_initializer=tf.keras.initializers.RandomNormal(mean=0., stddev=1.)),
             tf.keras.layers.Dense(6, activation='selu', kernel_initializer=tf.keras.initializers.RandomNormal(mean=0., stddev=1.)),
+            #tf.keras.layers.BatchNormalization(),
             tf.keras.layers.Dense(1)
         ])
         model.compile()
@@ -36,30 +39,29 @@ class DeepNet:
         pass
 
     def step(self, game_state):
-        tensor = tf.constant(game_state)
+        tensor = np.array([game_state])
+        print(game_state)
         #tensor = tf.reshape(tensor, [1, 140])
         #res = self.model(tensor)
         #res = self.model.predict(game_state)
         res = self.model.predict(tensor)
-        print("DeepNet_step ", res, len(res))
+        print("DeepNet_step ", res[0][0])
         #print(res)
-        res_int = round(tensor.numpy())
-        res_int = round(tensor.numpy())
+        res_int = round(res[0][0])
+        #res_int = round(tensor.numpy())
         if res_int < 0:
-            return (GameDoing.RELEASE)
+            return (GameDoing.RELEASE, None)
         if res_int == 0:
-            return (GameDoing.SPRINT)
+            return (GameDoing.SPRINT, None)
         if res_int == 1:
-            return (GameDoing.DO_RESEARCH)
+            return (GameDoing.DO_RESEARCH, None)
         if res_int == 2:
-            return (GameDoing.DO_SURVEY)
-        if res_int == 2:
-            return (GameDoing.DO_SURVEY)
+            return (GameDoing.DO_SURVEY, None)
         if 3 <= res_int < 3 + self.count_backlog:
             return (GameDoing.DECOMPOSE, res_int - 3)
         if 3 + self.count_backlog <= res_int and res_int < 3 + self.count_backlog + self.count_tasks:
             return (GameDoing.SELECT_TASK, res_int - 3 + self.count_backlog)
-        if res_int <= 3 + self.count_backlog + self.count_tasks:
-            return (GameDoing.BUY_ROBOT) # проверить что нормально вренется
+        if res_int >= 3 + self.count_backlog + self.count_tasks:
+            return (GameDoing.BUY_ROBOT, None) # проверить что нормально вренется # проверено что нет
 
         raise NameError("bad state")

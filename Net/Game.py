@@ -1,5 +1,6 @@
 from Model.model import Model
 from Controllers.mainController import Controller
+from Net.GameDoing import GameDoing
 
 class Game:
     def __init__(self):
