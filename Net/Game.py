@@ -8,6 +8,8 @@ class Game:
         self.controller = Controller(self.model)
         self.isWin = False
         self.isAlive = True
+        #delete
+        self.prefReward = 0
 
     def execute(self, do, index):
         if do == GameDoing.RELEASE:
@@ -27,7 +29,27 @@ class Game:
         else:
             raise NameError("bad state")
 
+    def get_reward2(self):
+        if self.model.status.money > 10**6:
+            self.isWin = True
+        M = self.model.status.money
+        L = self.model.status.loyal
+        U = self.model.status.users
+        S = self.model.status.number_sprint
+        if M <= 0 or L <= 0 or U <= 0:
+            self.isAlive = False
+            return -100000+S
+        Rbt = self.model.office.count_robot * 50000 * 0.8
+
+        T = self.model.status.target
+        simple = (Rbt + M + L * U)
+        tar = ((T - M) / T) if T > M else (M / T)
+        pref = self.prefReward
+        self.prefReward = simple * tar
+        return self.prefReward - pref
+
     def get_reward(self):
+        #return self.get_reward2()
         if self.model.status.money > 10**6:
             self.isWin = True
         M = self.model.status.money
@@ -56,7 +78,7 @@ class Game:
         working_story = self.model.status.working_story
         backlog = self.model.status.backlog
 
-        '''for i in range(backlog.get_len()):
+        for i in range(backlog.get_len()):
             story = backlog.get(i)
             if story is not None:
                 res.append(story.loyal)
@@ -82,7 +104,7 @@ class Game:
                 res.append(task.isWorking)
             else:
                 self.add_in_arr(0, 3, res)
-        '''
+
         return res
 
 

@@ -53,7 +53,7 @@ class Controller:
             if cost_tasks <= self.model.status.money:
                 self.model.status.money -= cost_tasks
                 self.model.status.backlog.add(Story(self.count_story, typetask))
-                self.self.count_story += 1
+                self.count_story += 1
                 return True
         return False
 
@@ -62,7 +62,7 @@ class Controller:
         if self.model.status.money > 0 and index >= 0 and index < self.max_count_story:
             if self.model.status.current_power + self.model.office.count_robot <= self.model.status.max_power:
                 self.model.status.current_power += self.model.office.count_robot
-                story = self.model.status.backlogg.get(index)
+                story = self.model.status.backlog.get(index)
                 if story is not None \
                         and self.model.status.working_story.can_add(1) \
                         and self.model.status.list_tasks.can_add(len(story.tasks)):

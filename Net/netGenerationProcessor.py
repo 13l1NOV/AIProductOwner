@@ -39,17 +39,31 @@ class NetGenerationProcessor:
         if not len(parent_net2) == len(parent_net2):
             raise NameError(len(parent1), len(parent2), "not equal len layer nets")
 
+        #count_layer = 0
+        #print(parent_net1)
         for layer_i in range(len(parent_net1)):
             if not len(parent_net1[layer_i]) == len(parent_net2[layer_i]):
                 raise NameError(len(parent1), len(parent2), "not equal len layer:", layer_i)
             parent_l_1 = parent_net1[layer_i]
             parent_l_2 = parent_net2[layer_i]
-            res.append([])
+            tmp = []
             for i in range(len(parent_l_1)):
-                res[layer_i].append(parent_l_1[i] if random.random() < 0.5 else parent_l_2[i])
+                tmp.append(parent_l_1[i])
+                #print("===========")
+                #print(parent_l_1[i])
+                if not type(parent_l_1[i]) == np.float32:
+                    for j in range(len(parent_l_1[i])):
+                        #res[layer_i].append(parent_l_1[i] if random.random() < 0.5 else parent_l_2[i])
+                        #tmp.append(parent_l_1[i] if random.random() < 0.5 else parent_l_2[i])
+                        tmp[i][j] = (parent_l_1[i][j] if random.random() < 0.5 else parent_l_2[i][j])
+                else:
+                    tmp.append(parent_l_1[i] if random.random() < 0.5 else parent_l_2[i])
+            res.append(np.array(tmp, dtype=np.float32))
+            #count_layer += 1
         return res
 
-    def mutate_net(self, net, percent_range=0.05, gen_percent=1.00):
+    #def mutate_net(self, net, percent_range=0.05, gen_percent=1.00):
+    def mutate_net(self, net, percent_range=0.8, gen_percent=1.00):
         for layer_i in range(len(net)):
             mute_gen = random.random() < gen_percent
             if(mute_gen):
