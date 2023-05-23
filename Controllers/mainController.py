@@ -101,14 +101,14 @@ class Controller:
 
             if self.model.status.current_power <= self.model.status.max_power:
 
-                if check_working_tasks():
+                if self.check_working_tasks():
                     self.model.status.count_blank_sprint = 0
 
                     remove = []
                     for i in range(self.model.status.working_story.get_len()):
                         story = self.model.status.working_story.get(i)
                         if story is not None:
-                            for task in story.tasks: # возможно корявые проценты!!!
+                            for task in story.tasks:  # возможно корявые проценты!!!
                                 if task.isWorking:
                                     story.weight_complete += task.weight
                                     story.remove(task)
@@ -130,6 +130,13 @@ class Controller:
                     self.model.status.users = decrease_users(count_blank_sprint, self.model)
                 return True
         # else:
+        return False
+
+    def check_working_tasks(self):
+        for i in range(self.model.status.list_tasks.get_len()):
+            task = self.model.status.list_tasks.get(i)
+            if task is not None and task.isWorking:
+                return True
         return False
 
 
@@ -159,7 +166,6 @@ def decrease_users(count_blank_sprint, model):
     users = model.status.users
     return max(users - 500 * (count_blank_sprint - 1), 0)
 
-
 # def change_id_stories_in_backlog():
 #     for story_id in range(len(self.model.status.backlog)):
 #         self.model.status.backlog[id_story] = story_id
@@ -178,12 +184,7 @@ def decrease_users(count_blank_sprint, model):
 #         self.model.status.working_story[story_id] = clear_list_story
 #     self.model.status.list_tasks = clear_list_tasks
 
-def check_working_tasks():
-    for i in range(self.model.status.list_tasks.get_len()):
-        task = self.model.status.list_tasks.get(i)
-        if task is not None and task.isWorking:
-            return True
-    return False
+
 #
 #
 # def check_complete_story():

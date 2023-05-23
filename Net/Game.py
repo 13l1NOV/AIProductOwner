@@ -6,7 +6,8 @@ class Game:
     def __init__(self):
         self.model = Model()
         self.controller = Controller(self.model)
-        pass
+        self.isWin = False
+        self.isAlive = True
 
     def execute(self, do, index):
         if do == GameDoing.RELEASE:
@@ -18,7 +19,7 @@ class Game:
         elif do == GameDoing.DO_SURVEY:
             self.controller.create_one_hard_task()
         elif do == GameDoing.DECOMPOSE:
-            self.controller.decomposition_tasks(index) # ДОБАВИТЬ В КОНТРОЛЛЕР ВЫПОЛНЕНИЕ ТОЛЬКО ОДНОЙ ЗАДАЧИ НА ДЕКОМПОЗЩИЦИЮ
+            self.controller.decomposition_tasks(index)
         elif do == GameDoing.SELECT_TASK:
             self.controller.select_task(index) # ПЕРЕДЕЛАИТЬ НАЗВАНИЕ В КОНТРОЛЛЕРЕ
         elif do == GameDoing.BUY_ROBOT:
@@ -26,7 +27,18 @@ class Game:
         else:
             raise NameError("bad state")
 
-
+    def get_reward(self):
+        if self.model.status.money > 10**6:
+            self.isWin = True
+        M = self.model.status.money
+        L = self.model.status.loyal
+        U = self.model.status.users
+        CB = self.model.office.count_robot
+        S = self.model.status.number_sprint
+        if M <= 0 or L <= 0 or U <= 0:
+            self.isAlive = False
+            return -100000+S
+        return (M+L*U*0.3 - CB*10000 - 10*6)/S
 
     def get_state(self): # НАСТРОИТЬ ВХОДНЫЕ
         res = []
@@ -38,14 +50,13 @@ class Game:
         res.append(st.target)
         res.append(st.current_power)
         res.append(st.max_power)
-        #res.append(st.count_room)
         res.append(st.count_blank_sprint)
 
         tasks = self.model.status.list_tasks
         working_story = self.model.status.working_story
         backlog = self.model.status.backlog
 
-        for i in range(backlog.get_len()):
+        '''for i in range(backlog.get_len()):
             story = backlog.get(i)
             if story is not None:
                 res.append(story.loyal)
@@ -71,6 +82,7 @@ class Game:
                 res.append(task.isWorking)
             else:
                 self.add_in_arr(0, 3, res)
+        '''
         return res
 
 

@@ -28,8 +28,8 @@ class SmartArray():
                self.arr[i] = elem
                self.hash = hash(elem)
                cur_count+=1
-               return
-        raise NameError("smartArray - cant add!")
+        return
+        #raise NameError("smartArray - cant add!")
 
     def remove(self, elem):
         hash = hash(elem)

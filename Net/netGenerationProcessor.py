@@ -1,4 +1,5 @@
 import random
+import numpy as np
 
 class NetGenerationProcessor:
 
@@ -6,26 +7,30 @@ class NetGenerationProcessor:
         self.count_top_nets = 20 # must more than 4
         pass
 
+    def select_top_nets(self, nets): # сортировка сетей по крутости
+        fitness = [net.fitness for net in nets]
+        elites = [nets[i] for i in np.argsort(fitness)[self.count_top_nets:]]
+        return elites
     # nets in sorted range
-    # nets = [[]]
-    def process(self, nets):
-        if not len(nets) == self.count_top_nets:
-            raise NameError(len(nets), "- len nets not equal ", self.count_top_nets)
+    # nets = [[]] # поправка weights = [[[w]] [b]] # мы работаем с весами а не с сетью
+    def process(self, weights):
+        if not len(weights) == self.count_top_nets:
+            raise NameError(len(weights), "- len nets not equal ", self.count_top_nets)
 
         res = []
-        for i in range(nets * 1.5):
-            index1 = random.randint(0, len(nets) - 1)
-            index2 = random.randint(0, len(nets) - 1)
-            res.append(self.pairing(nets[index1], nets[index2]))
+        for i in range(int(len(weights) * 1.5)):
+            index1 = random.randint(0, len(weights) - 1)
+            index2 = random.randint(0, len(weights) - 1)
+            res.append(self.pairing(weights[index1], weights[index2]))
 
-        for i in range(nets * 0.25):
-            res.append(mutate_array(nets[i]))
+        for i in range(int(len(weights) * 0.25)):
+            res.append(self.mutate_net(weights[i]))
 
-        for i in range(nets * 0.25):
-            index = random.randint(nets * 0.25, len(nets) - 1)
-            res.append(self.mutate_net(nets[index], 0.5, 0.2))
+        for i in range(int(len(weights) * 0.25)):
+            index = random.randint(len(weights) * 0.25, len(weights) - 1)
+            res.append(self.mutate_net(weights[index], 0.5, 0.2))
 
-        if not len(res) == len(nets) * 2:
+        if not len(res) == len(weights) * 2:
             raise NameError("must equal!")
         return res
 

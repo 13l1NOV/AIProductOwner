@@ -1,5 +1,6 @@
 import random
 import numpy as np
+from Model.Tasks.task import Task
 
 class Story:
     max_weight = 38
@@ -15,7 +16,7 @@ class Story:
         self.loyal = self.set_loyal()
         self.users = self.set_users()
         self.weight_complete = 0
-        self.create_tasks(self)
+        self.create_tasks()
 
     def set_weight(self):
         if self.type_story == 'S':
@@ -63,7 +64,7 @@ class Story:
         return True if self.tasks else False
 
     def create_tasks(self):
-        for task_id in range(self.count_task):
+        for task_id in range(int(self.count_task)):
             div = self.count_task - task_id
             if(self.weight > 19):
                 max_weight = 19

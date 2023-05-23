@@ -12,16 +12,17 @@ class DeepNet:
 
     def create_initial_net(self):
         model = tf.keras.models.Sequential([
-            tf.keras.layers.Dense(12, activation='selu', kernel_initializer=tf.keras.initializers.RandomNormal(mean=0., stddev=1.)),
+            tf.keras.layers.Dense(4, activation='selu', kernel_initializer=tf.keras.initializers.RandomNormal(mean=0., stddev=1.)),
             #tf.keras.layers.BatchNormalization(),
             #tf.keras.layers.Dense(12, activation='selu', input_shape=(1,), kernel_initializer=tf.keras.initializers.RandomNormal(mean=0., stddev=1.)),
-            tf.keras.layers.Dense(6, activation='selu', kernel_initializer=tf.keras.initializers.RandomNormal(mean=0., stddev=1.)),
+            tf.keras.layers.Dense(2, activation='selu', kernel_initializer=tf.keras.initializers.RandomNormal(mean=0., stddev=1.)),
             #tf.keras.layers.BatchNormalization(),
             tf.keras.layers.Dense(1)
         ])
         model.compile()
-        #model.summary()
         #model.evaluate()
+
+        #model.summary()
         return model
 
     def get_weights(self):
@@ -29,26 +30,22 @@ class DeepNet:
         weights = []
         for layer in layers:
             layer_weights = layer.get_weights()
-            weights.append(layer_weights[0])
-            #if len(layer_weights) > 1:
-            #    weights.append(layer_weights[1])
+            for w in layer_weights:
+                weights.append(w)
         return weights
 
-    def replace_net_weight(self):
+    def replace_net_weight(self, new_weights):
         #model.load_weights(...)
-        pass
+        weights = self.model.get_weights()
+        self.model.set_weights()
 
     def step(self, game_state):
         tensor = np.array([game_state])
-        print(game_state)
-        #tensor = tf.reshape(tensor, [1, 140])
-        #res = self.model(tensor)
-        #res = self.model.predict(game_state)
         res = self.model.predict(tensor)
-        print("DeepNet_step ", res[0][0])
-        #print(res)
-        res_int = round(res[0][0])
-        #res_int = round(tensor.numpy())
+        #print("DeepNet_step ", res[0][0])
+        #print(len(self.get_weights()))
+        res_int = round(res[0][0]/(10**7))
+        print(res_int)
         if res_int < 0:
             return (GameDoing.RELEASE, None)
         if res_int == 0:
