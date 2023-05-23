@@ -104,7 +104,6 @@ class Game:
                 res.append(task.isWorking)
             else:
                 self.add_in_arr(0, 3, res)
-
         return res
 
 

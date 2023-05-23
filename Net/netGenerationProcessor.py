@@ -16,7 +16,7 @@ class NetGenerationProcessor:
     def process(self, weights):
         if not len(weights) == self.count_top_nets:
             raise NameError(len(weights), "- len nets not equal ", self.count_top_nets)
-
+        weights = weights.copy()
         res = []
         for i in range(int(len(weights) * 1.5)):
             index1 = random.randint(0, len(weights) - 1)
@@ -36,6 +36,8 @@ class NetGenerationProcessor:
 
     def pairing(self, parent_net1,  parent_net2):
         res = []
+        parent_net1 = parent_net1.copy()
+        parent_net2 = parent_net2.copy()
         if not len(parent_net2) == len(parent_net2):
             raise NameError(len(parent1), len(parent2), "not equal len layer nets")
 
@@ -48,10 +50,11 @@ class NetGenerationProcessor:
             parent_l_2 = parent_net2[layer_i]
             tmp = []
             for i in range(len(parent_l_1)):
-                tmp.append(parent_l_1[i])
+
                 #print("===========")
                 #print(parent_l_1[i])
-                if not type(parent_l_1[i]) == np.float32:
+                if type(parent_l_1[i]) == np.ndarray:
+                    tmp.append(parent_l_1[i])
                     for j in range(len(parent_l_1[i])):
                         #res[layer_i].append(parent_l_1[i] if random.random() < 0.5 else parent_l_2[i])
                         #tmp.append(parent_l_1[i] if random.random() < 0.5 else parent_l_2[i])
@@ -63,10 +66,12 @@ class NetGenerationProcessor:
         return res
 
     #def mutate_net(self, net, percent_range=0.05, gen_percent=1.00):
-    def mutate_net(self, net, percent_range=0.8, gen_percent=1.00):
-        for layer_i in range(len(net)):
+    def mutate_net(self, weights, percent_range=0.8, gen_percent=1.00):
+        weights = weights.copy()
+        for layer_i in range(len(weights)):
             mute_gen = random.random() < gen_percent
             if(mute_gen):
                 r = (random.random() * 2 - 1) * percent_range
-                for j in range(len(net[layer_i])):
-                    net[layer_i][j] *= (1 + r)
+                for j in range(len(weights[layer_i])):
+                    weights[layer_i][j] *= (1 + r)
+        return weights

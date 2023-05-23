@@ -19,10 +19,10 @@ class DeepNet:
 
     def create_initial_net(self):
         model = tf.keras.models.Sequential([
-            tf.keras.layers.Dense(24, activation='selu', kernel_initializer=tf.keras.initializers.RandomNormal(mean=0., stddev=1.), bias_initializer=tf.keras.initializers.RandomNormal(mean=0., stddev=8.)),
+            tf.keras.layers.Dense(12, activation='selu', kernel_initializer=tf.keras.initializers.RandomNormal(mean=0., stddev=1.), bias_initializer=tf.keras.initializers.RandomNormal(mean=0., stddev=8.)),
             tf.keras.layers.BatchNormalization(),
             #tf.keras.layers.Dense(12, activation='selu', input_shape=(1,), kernel_initializer=tf.keras.initializers.RandomNormal(mean=0., stddev=1.)),
-            tf.keras.layers.Dense(12, activation='selu', kernel_initializer=tf.keras.initializers.RandomNormal(mean=0., stddev=1.), bias_initializer=tf.keras.initializers.RandomNormal(mean=0., stddev=8.)),
+            tf.keras.layers.Dense(6, activation='selu', kernel_initializer=tf.keras.initializers.RandomNormal(mean=0., stddev=1.), bias_initializer=tf.keras.initializers.RandomNormal(mean=0., stddev=8.)),
             #tf.keras.layers.BatchNormalization(),
             #tf.keras.layers.Dense(1, activation="sigmoid")
             #tf.keras.layers.BatchNormalization(),
@@ -47,8 +47,7 @@ class DeepNet:
 
     def replace_net_weight(self, new_weights):
         #model.load_weights(...)
-        weights = self.model.get_weights()
-        self.model.set_weights(weights)
+        self.model.set_weights(new_weights.copy())
 
     def step(self, game_state):
         tensor = np.array([game_state])
