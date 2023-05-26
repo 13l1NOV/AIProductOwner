@@ -4,11 +4,8 @@ import numpy as np
 import math
 from Net.GameDoing import GameDoing
 
-
 def normalized_sigm(x):
-    #print(x)
     return 1 / (1 + math.exp(-x))
-    #return 1 / (1 + tf.math.exp(-x) * 0.005)
 
 def custom_loss(y,y1):
     return y1
@@ -24,23 +21,17 @@ class DeepNet:
 
     def create_initial_net(self):
         model = tf.keras.models.Sequential([
-            tf.keras.layers.Dense(12, activation='selu', kernel_initializer=tf.keras.initializers.RandomNormal(mean=0., stddev=1.), bias_initializer=tf.keras.initializers.RandomNormal(mean=0., stddev=8.)),
+            tf.keras.layers.Dense(12, activation='selu',
+                                  kernel_initializer=tf.keras.initializers.RandomNormal(mean=0., stddev=1.),
+                                  bias_initializer=tf.keras.initializers.RandomNormal(mean=0., stddev=1.)),
             tf.keras.layers.BatchNormalization(),
-            #tf.keras.layers.Dense(12, activation='selu', input_shape=(1,), kernel_initializer=tf.keras.initializers.RandomNormal(mean=0., stddev=1.)),
-            tf.keras.layers.Dense(6, activation='selu', kernel_initializer=tf.keras.initializers.RandomNormal(mean=0., stddev=1.), bias_initializer=tf.keras.initializers.RandomNormal(mean=0., stddev=8.)),
-            #tf.keras.layers.BatchNormalization(),
-            #tf.keras.layers.Dense(1, activation="sigmoid")
-            #tf.keras.layers.BatchNormalization(),
-            #tf.keras.layers.Dense(1, activation="selu"),
-            #tf.keras.layers.Dense(1, activation=normalized_sigm)
+            tf.keras.layers.Dense(6, activation='selu',
+                                  kernel_initializer=tf.keras.initializers.RandomNormal(mean=0., stddev=1.),
+                                  bias_initializer=tf.keras.initializers.RandomNormal(mean=0., stddev=1.)),
             tf.keras.layers.Dense(1)
         ])
 
-
-        model.compile(optimizer = self.optimizer,loss = custom_loss)
-        #model.evaluate()
-
-        #model.summary()
+        model.compile(optimizer=self.optimizer, loss=custom_loss)
         return model
 
     def get_weights(self):
@@ -53,17 +44,12 @@ class DeepNet:
         return weights
 
     def replace_net_weight(self, new_weights):
-        #model.load_weights(...)
         self.model.set_weights(new_weights.copy())
 
     def step(self, game_state):
         tensor = np.array([game_state])
-        res = self.model.predict(tensor, verbose = 0)
-        #res_int = round(normalized_sigm(res[0][0] / 1000000) * (3 + self.count_backlog + self.count_tasks + 2) - 1)
-        res_int = res[0][0]
-        #print(res_int)
-        res_int = round(res_int)
-        #print(res[0][0] / 1000000, normalized_sigm(res[0][0] / 1000000), res_int)
+        res = self.model.predict(tensor, verbose=0)
+        res_int = round(res[0][0])
 
         if res_int == -1:
             return (GameDoing.RELEASE, None)
@@ -78,5 +64,6 @@ class DeepNet:
         if 3 + self.count_backlog <= res_int and res_int < 3 + self.count_backlog + self.count_tasks:
             return (GameDoing.SELECT_TASK, res_int - 3 - self.count_backlog)
         if res_int == 3 + self.count_backlog + self.count_tasks:
-            return (GameDoing.BUY_ROBOT, None) # проверить что нормально вренется # проверено что нет
+            return (GameDoing.BUY_ROBOT, None)
+
         return (GameDoing.DIE, None)

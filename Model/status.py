@@ -1,4 +1,4 @@
-from Controllers.SmartArray import SmartArray
+from Model.SmartArray import SmartArray
 class status:
     def __init__(self):
         self.money = 200000 # текущие деньги

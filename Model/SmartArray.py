@@ -1,4 +1,3 @@
-
 class SmartArray():
     def __init__(self, len):
         self.len = len
@@ -28,8 +27,6 @@ class SmartArray():
                self.arr[i] = elem
                self.hash = hash(elem)
                cur_count+=1
-        return
-        #raise NameError("smartArray - cant add!")
 
     def remove(self, elem):
         hash = hash(elem)

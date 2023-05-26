@@ -1,5 +1,5 @@
 from Model.model import Model
-from Controllers.mainController import Controller
+from Controllers.Controller import Controller
 from Net.GameDoing import GameDoing
 
 class Game:
@@ -31,26 +31,6 @@ class Game:
             raise NameError("bad state")
         self.prefState = self.get_hash_state()
 
-    def get_reward2(self):
-        M = self.model.status.money
-        L = self.model.status.loyal
-        U = self.model.status.users
-        S = self.model.status.number_sprint
-
-        if self.model.status.money > 10**6:
-            self.isWin = True
-            return
-        if M <= 0 or L <= 0 or U <= 0:
-            self.isAlive = False
-        Rbt = self.model.office.count_robot * 50000 * 0.8
-
-        T = self.model.status.target
-        simple = (Rbt + M + L * U)
-        tar = ((T - M) / T) if T > M else (M / T)
-        #pref = self.prefReward
-        #self.prefReward = simple * tar
-        #return self.prefReward - pref
-
     def state_changed(self):
         return self.get_hash_state() != self.prefState
 
@@ -73,7 +53,7 @@ class Game:
 
         return (M + U*L)/S
 
-    def get_state(self): # НАСТРОИТЬ ВХОДНЫЕ
+    def get_state(self):
         res = []
         st = self.model.status
         res.append(st.money / 1000000)
@@ -84,7 +64,6 @@ class Game:
         res.append(st.current_power / 160)
         res.append(st.max_power / 160)
         res.append(st.count_blank_sprint / 3)
-        # добавить стоимость покупки робота
 
         tasks = self.model.status.list_tasks
         working_story = self.model.status.working_story

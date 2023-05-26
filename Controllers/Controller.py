@@ -57,8 +57,7 @@ class Controller:
                 return True
         return False
 
-    # =-================================
-    def decomposition_tasks(self, index):  #
+    def decomposition_tasks(self, index):
         if self.model.status.money > 0 and index >= 0 and index < self.max_count_story:
             if self.model.status.current_power + self.model.office.count_robot <= self.model.status.max_power:
                 self.model.status.current_power += self.model.office.count_robot
@@ -73,7 +72,6 @@ class Controller:
                     return True
         return False
 
-    # Взаимодействие с подзадачами
     def select_task(self, index):
         if self.model.status.money > 0 and index >= 0:
             task = self.model.status.list_tasks.get(index)
@@ -83,24 +81,9 @@ class Controller:
                 return True
         return False
 
-    # def unselect_task(self, id): # не надо по идее
-    #     if self.model.status.money > 0 and id != -1 and task.isWorking:
-    #         task = self.model.status.list_tasks.get(id)
-    #         if task.id_subtask == id:
-    #             self.model.status.list_tasks.get(id).isWorking = False
-    #             self.model.status.current_power -= task.weight
-    #             # break
-    #             return True
-    #     # else:
-    #     return False
-
-    # =-================================
-    # Взаимодействие со спринтами
     def start_sprint(self):
         if self.model.status.money > 0 and self.model.status.users > 0 and self.model.status.loyal > 0:
-
             if self.model.status.current_power <= self.model.status.max_power:
-
                 if self.check_working_tasks():
                     self.model.status.count_blank_sprint = 0
 
@@ -129,7 +112,6 @@ class Controller:
                     self.model.status.loyal = decrease_loyal(count_blank_sprint, self.model)
                     self.model.status.users = decrease_users(count_blank_sprint, self.model)
                 return True
-        # else:
         return False
 
     def check_working_tasks(self):
@@ -139,8 +121,6 @@ class Controller:
                 return True
         return False
 
-
-# вспомогательные методы
 def increase_money(model):
     cost_robot = 0
     if model.status.count_blank_sprint == 0:
@@ -165,30 +145,3 @@ def decrease_loyal(count_blank_sprint, model):
 def decrease_users(count_blank_sprint, model):
     users = model.status.users
     return max(users - 500 * (count_blank_sprint - 1), 0)
-
-# def change_id_stories_in_backlog():
-#     for story_id in range(len(self.model.status.backlog)):
-#         self.model.status.backlog[id_story] = story_id
-#         for task in self.model.status.backlog[id_story].tasks:
-#             task.id_story = story_id
-
-# def change_id_tasks():
-#     clear_list_tasks = []
-#     for story_id in range(len(self.model.status.working_story)):
-#         clear_list_story = []
-#         story = self.model.status.working_story[story_id]
-#         for task_id in range(len(self.model.status.working_story[story_id].tasks)):
-#             if not story.tasks[task_id].isWorking:
-#                 clear_list_story.append(story[task_id])
-#                 clear_list_tasks.append(story[task_id])
-#         self.model.status.working_story[story_id] = clear_list_story
-#     self.model.status.list_tasks = clear_list_tasks
-
-
-#
-#
-# def check_complete_story():
-#     for story in self.model.status.working_story:
-#         if story.isComplete:
-#             return True
-#     return False
