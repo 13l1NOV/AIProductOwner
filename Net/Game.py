@@ -8,8 +8,7 @@ class Game:
         self.controller = Controller(self.model)
         self.isWin = False
         self.isAlive = True
-        #delete
-        self.prefReward = 0
+        self.prefState = self.get_hash_state()
 
     def execute(self, do, index):
         if do == GameDoing.RELEASE:
@@ -26,53 +25,66 @@ class Game:
             self.controller.select_task(index) # ПЕРЕДЕЛАИТЬ НАЗВАНИЕ В КОНТРОЛЛЕРЕ
         elif do == GameDoing.BUY_ROBOT:
             self.controller.buy_robot()
+        elif do == GameDoing.DIE:
+            self.model.status.money = -1
         else:
             raise NameError("bad state")
+        self.prefState = self.get_hash_state()
 
     def get_reward2(self):
-        if self.model.status.money > 10**6:
-            self.isWin = True
         M = self.model.status.money
         L = self.model.status.loyal
         U = self.model.status.users
         S = self.model.status.number_sprint
+
+        if self.model.status.money > 10**6:
+            self.isWin = True
+            return
         if M <= 0 or L <= 0 or U <= 0:
             self.isAlive = False
-            return -100000+S
         Rbt = self.model.office.count_robot * 50000 * 0.8
 
         T = self.model.status.target
         simple = (Rbt + M + L * U)
         tar = ((T - M) / T) if T > M else (M / T)
-        pref = self.prefReward
-        self.prefReward = simple * tar
-        return self.prefReward - pref
+        #pref = self.prefReward
+        #self.prefReward = simple * tar
+        #return self.prefReward - pref
+
+    def state_changed(self):
+        return self.get_hash_state() != self.prefState
 
     def get_reward(self):
-        #return self.get_reward2()
-        if self.model.status.money > 10**6:
-            self.isWin = True
         M = self.model.status.money
         L = self.model.status.loyal
         U = self.model.status.users
         CB = self.model.office.count_robot
         S = self.model.status.number_sprint
+
+        if self.model.status.money > 10**6:
+            self.isWin = True
+            return (M + U*L)/S
+
         if M <= 0 or L <= 0 or U <= 0:
             self.isAlive = False
-            return -100000+S
-        return (M+L*U*0.3 - CB*10000 - 10*6)/S
+
+        if not self.isAlive:
+            return S
+
+        return (M + U*L)/S
 
     def get_state(self): # НАСТРОИТЬ ВХОДНЫЕ
         res = []
         st = self.model.status
-        res.append(st.money)
-        res.append(st.loyal)
-        res.append(st.users)
-        res.append(st.number_sprint)
-        res.append(st.target)
-        res.append(st.current_power)
-        res.append(st.max_power)
-        res.append(st.count_blank_sprint)
+        res.append(st.money / 1000000)
+        res.append(st.loyal / 5)
+        res.append(st.users / 100000)
+        res.append(st.number_sprint / 150)
+        res.append(st.target / 1000000)
+        res.append(st.current_power / 160)
+        res.append(st.max_power / 160)
+        res.append(st.count_blank_sprint / 3)
+        # добавить стоимость покупки робота
 
         tasks = self.model.status.list_tasks
         working_story = self.model.status.working_story
@@ -81,26 +93,26 @@ class Game:
         for i in range(backlog.get_len()):
             story = backlog.get(i)
             if story is not None:
-                res.append(story.loyal)
-                res.append(story.users)
-                res.append(story.weight)
+                res.append(story.loyal / 0.4)
+                res.append(story.users / 4000)
+                res.append(story.weight / 152)
             else:
                 self.add_in_arr(0, 3, res)
 
         for i in range(working_story.get_len()):
             story = working_story.get(i)
             if story is not None:
-                res.append(story.loyal)
-                res.append(story.users)
-                res.append(story.weight_complete)
+                res.append(story.loyal / 0.4)
+                res.append(story.users / 4000)
+                res.append(story.weight_complete / 152)
             else:
                 self.add_in_arr(0, 3, res)
 
         for i in range(tasks.get_len()):
             task = tasks.get(i)
             if task is not None:
-                res.append(task.weight)
-                res.append(working_story.get_index(task.id_story))
+                res.append(task.weight / 20)
+                res.append(working_story.get_index(task.id_story) / 6)
                 res.append(task.isWorking)
             else:
                 self.add_in_arr(0, 3, res)
@@ -110,3 +122,10 @@ class Game:
     def add_in_arr(self, value, count, arr):
         for i in range(count):
             arr.append(value)
+
+    def get_hash_state(self):
+        s = self.model.status
+        b = s.backlog.get_len()
+        w = s.working_story.get_len()
+        l = s.list_tasks.get_len()
+        return hash((s.money, s.loyal, s.users, b, w, l, s.current_power, s.number_sprint))

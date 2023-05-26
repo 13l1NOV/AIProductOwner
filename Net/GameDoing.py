@@ -8,4 +8,5 @@ class GameDoing(Enum):
     DECOMPOSE = 4
     SELECT_TASK = 5
     BUY_ROBOT = 6
+    DIE = 7
 

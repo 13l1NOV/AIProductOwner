@@ -2,6 +2,7 @@ from Net.DeepNet import DeepNet
 from Net.Game import Game
 from Net.netGenerationProcessor import NetGenerationProcessor
 import numpy as np
+import tensorflow as tf
 class NetProcessor:
     def __init__(self):
         self.net_count = 40
@@ -36,15 +37,26 @@ class NetProcessor:
                 do = []
                 for i in range(len(nets)):
                     net = nets[i]
-                    reward = games[i].get_reward()
                     if games[i].isAlive:
-                        do.append(self.net_step(nets[i], games[i]))
+                        prob = self.net_step(nets[i], games[i])
+                        do.append(prob)
+                        reward = games[i].get_reward()
+                        net.fitness = reward
+
+                        if not games[i].state_changed():
+                            #net.fitness = -1000000
+                            #weights = self.ngp.mutate_net(nets[i].get_weights(), 1.0, 0.01)
+                            #nets[i].replace_net_weight(weights)
+                            net.fitness -= 10000
                         #print(games[i].get_state())
                         lives += 1
-                        net.fitness = reward
-                    else:
-                        net.fitness = -100000
-                    print(int(reward/1000), end="|")
+                        prob = calculate_loss(games[i],iteration)
+                        net.model.fit([games[i].get_state()],[prob], epochs=1,verbose=0)
+                        if not games[i].isAlive:
+                            net.fitness = reward
+
+
+                    print(int(net.fitness), end="|")
                 print()
                 print("===================== generation: ", generation, " iteration: ", iteration, " lives:", lives)
                 #print("".join(do))
@@ -61,7 +73,8 @@ class NetProcessor:
         print("########################################!!!!!!!!!!!!")
         new_weights = []
         elites = self.ngp.select_top_nets(nets)
-        print(elites[0].fitness)
+        for elite in elites:
+            print(elite.fitness)
         print("---------------------------")
         #print(nets[0].get_weights())
         print("########################################")
@@ -77,8 +90,12 @@ class NetProcessor:
             net.replace_net_weight(new_weights[c])
             c+=1
 
-
-
+def calculate_loss(game,count_iter):
+    if not game.isAlive:
+        return 1000
+    game_office = game.model.office
+    game = game.model.status
+    return ((-1)*game.money*(game.money + game.users*game.loyal*0.3-game_office.count_robot)) / (count_iter*1000000)
 
 
 

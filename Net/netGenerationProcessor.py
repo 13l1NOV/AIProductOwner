@@ -1,10 +1,12 @@
 import random
 import numpy as np
+from Net.DeepNet import DeepNet
+from Net.Game import Game
 
 class NetGenerationProcessor:
 
     def __init__(self):
-        self.count_top_nets = 20 # must more than 4
+        self.count_top_nets = 20 # must more than 10
         pass
 
     def select_top_nets(self, nets): # сортировка сетей по крутости
@@ -18,20 +20,27 @@ class NetGenerationProcessor:
             raise NameError(len(weights), "- len nets not equal ", self.count_top_nets)
         weights = weights.copy()
         res = []
-        for i in range(int(len(weights) * 1.5)):
-            index1 = random.randint(0, len(weights) - 1)
-            index2 = random.randint(0, len(weights) - 1)
+        l_w = len(weights)
+        for i in range(int(l_w * 0.1)):
+            res.append(weights[-i])
+        for i in range(int(l_w * 1.4)):
+            index1 = random.randint(0, l_w - 1)
+            index2 = random.randint(0, l_w - 1)
             res.append(self.pairing(weights[index1], weights[index2]))
 
-        for i in range(int(len(weights) * 0.25)):
+        for i in range(int(l_w * 0.1), int(l_w * 0.3)):
             res.append(self.mutate_net(weights[i]))
 
-        for i in range(int(len(weights) * 0.25)):
-            index = random.randint(len(weights) * 0.25, len(weights) - 1)
+        for i in range(int(l_w * 0.3)):
+            index = random.randint(l_w * 0.3, l_w - 1)
             res.append(self.mutate_net(weights[index], 0.5, 0.2))
+            #res.append(self.mutate_net(weights[index]))
 
-        if not len(res) == len(weights) * 2:
-            raise NameError("must equal!")
+        #for i in range(int(l_w * 0.2)):
+            #res.append(self.mutate_net_new())
+
+        if not len(res) == l_w * 2:
+            raise NameError("must equal!", len(res), "|", l_w)
         return res
 
     def pairing(self, parent_net1,  parent_net2):
@@ -65,8 +74,7 @@ class NetGenerationProcessor:
             #count_layer += 1
         return res
 
-    #def mutate_net(self, net, percent_range=0.05, gen_percent=1.00):
-    def mutate_net(self, weights, percent_range=0.8, gen_percent=1.00):
+    def mutate_net(self, weights, percent_range=0.05, gen_percent=1.00):
         weights = weights.copy()
         for layer_i in range(len(weights)):
             mute_gen = random.random() < gen_percent
@@ -74,4 +82,33 @@ class NetGenerationProcessor:
                 r = (random.random() * 2 - 1) * percent_range
                 for j in range(len(weights[layer_i])):
                     weights[layer_i][j] *= (1 + r)
+        return weights
+
+    def rework_weights(self, weights, gen_percent=1.00):
+        weights = weights.copy()
+        for layer_i in range(len(weights)):
+            mute_gen = random.random() < gen_percent
+            if(mute_gen):
+                r = (random.random() * 2 - 1)
+                for j in range(len(weights[layer_i])):
+                    if type(weights[layer_i][j]) == np.ndarray:
+                        for k in range(len(weights[layer_i][j])):
+                            weights[layer_i][j][k] = float(r)
+                    else:
+                        weights[layer_i][j] = float(r)
+        return weights
+
+    def mutate_net2(self, weights, mutation_rate=0.5, mutation_size=0.001):
+        mutated_weights = np.copy(weights)
+        for i, weight in enumerate(mutated_weights):
+            if np.random.random() < mutation_rate:
+                mutated_weights[i] += np.random.normal(loc=0.0, scale=mutation_size)
+        return mutated_weights
+
+    def mutate_net_new(self):
+        net = DeepNet()
+        state = Game()
+        state = state.get_state()
+        net.step(state)
+        weights = net.model.get_weights()
         return weights

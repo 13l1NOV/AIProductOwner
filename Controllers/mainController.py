@@ -108,7 +108,7 @@ class Controller:
                     for i in range(self.model.status.working_story.get_len()):
                         story = self.model.status.working_story.get(i)
                         if story is not None:
-                            for task in story.tasks:  # возможно корявые проценты!!!
+                            for task in story.tasks:
                                 if task.isWorking:
                                     story.weight_complete += task.weight
                                     story.remove(task)
