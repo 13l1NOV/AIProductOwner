@@ -42,7 +42,6 @@ if __name__ == "__main__":
     generations = 100
     iterations = 1000
     count_top_net = 20
-    count_elitism_net = 2
     count_child_net = 10
     count_w_mutant = 4
     count_s_mutant = 4
