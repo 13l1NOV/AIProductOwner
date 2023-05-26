@@ -22,7 +22,7 @@ class Game:
         elif do == GameDoing.DECOMPOSE:
             self.controller.decomposition_tasks(index)
         elif do == GameDoing.SELECT_TASK:
-            self.controller.select_task(index) # ПЕРЕДЕЛАИТЬ НАЗВАНИЕ В КОНТРОЛЛЕРЕ
+            self.controller.select_task(index)
         elif do == GameDoing.BUY_ROBOT:
             self.controller.buy_robot()
         elif do == GameDoing.DIE:

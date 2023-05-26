@@ -4,8 +4,6 @@ import numpy as np
 import math
 from Net.GameDoing import GameDoing
 
-def normalized_sigm(x):
-    return 1 / (1 + math.exp(-x))
 
 def custom_loss(y,y1):
     return y1
@@ -30,7 +28,7 @@ class DeepNet:
                                   bias_initializer=tf.keras.initializers.RandomNormal(mean=0., stddev=1.)),
             tf.keras.layers.Dense(1)
         ])
-
+        model.build(input_shape=(None, 140))
         model.compile(optimizer=self.optimizer, loss=custom_loss)
         return model
 

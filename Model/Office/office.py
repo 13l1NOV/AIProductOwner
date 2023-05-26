@@ -1,6 +1,3 @@
-from Model.Rooms.rooms import Room
-
-
 class Office:
     def __init__(self):
         self.cost_robot = 50000

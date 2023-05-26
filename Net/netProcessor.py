@@ -3,11 +3,12 @@ from Net.Game import Game
 from Net.netGenerationProcessor import NetGenerationProcessor
 import numpy as np
 import tensorflow as tf
+import os
 
 class NetProcessor:
-    def __init__(self):
-        self.net_count = 40
-        self.ngp = NetGenerationProcessor()
+    def __init__(self,count_net,count_top,count_child,count_w_mutant,count_s_mutant):
+        self.net_count = count_net
+        self.ngp = NetGenerationProcessor(count_net, count_top, count_child, count_w_mutant, count_s_mutant)
 
     def net_step(self, net, game):
         state = game.get_state()
@@ -18,7 +19,7 @@ class NetProcessor:
     def formatDoing(self, do, index):
         return (do.value, ("" if index == None else str(index)))
 
-    def run(self, generetions=100, iterations=30):
+    def run(self, generetions=100, iterations=30,save_path = os.getcwd()):
         nets = []
 
         for i in range(self.net_count):
@@ -50,13 +51,11 @@ class NetProcessor:
                         net.fitness = reward
 
                         if not games[i].state_changed():
-                            #weights = self.ngp.mutate_net(nets[i].get_weights(), 1.0, 0.01)
-                            #nets[i].replace_net_weight(weights)
                             net.fitness -= 10000
 
                         self.ngp.fit_loss(games[i], net, iteration)
-                        # if not games[i].isAlive: # ЗАЧЕМ ЭТО НАДО БЫЛО ??? НЕСКОЛЬКО СТРОК ВЫШЕ УЖЕ УСТАНАВЛИВАЛАСЬ НАГРАДА
-                        #     net.fitness = reward
+                        if not games[i].isAlive:
+                             net.fitness = reward
                         print(int(net.fitness), end="|")
 
                 print("\n===================== generation: ", generation, " iteration: ", iteration, " lives:", lives)
@@ -64,15 +63,14 @@ class NetProcessor:
 
                 if lives < 1:
                     break
-
             # after generation
-            self.update_nets(nets)
+            self.update_nets(nets,save_path)
 
-    def update_nets(self, nets):
+    def update_nets(self, nets,save_path):
         print("=======================================")
         was_weights = []
         elites = self.ngp.select_top_nets(nets)
-
+        elites[0].model.save(save_path+'/saved_model')
         print("best nets fitness:", end="")
         for net in elites:
             print(net.fitness, end="|")
